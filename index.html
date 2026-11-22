@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Умная колонка с открытым исходным кодом — проект Васильева Антона</title>
+<meta name="description" content="Прототип умной колонки на Rock Pi 4B+ с локальной обработкой голоса, открытым кодом GNU GPLv3 и модульным корпусом. Проект «Шаг в будущее», Мурманск, 2026.">
+<meta name="theme-color" content="#FFA51F">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Умная колонка с открытым исходным кодом">
+<meta property="og:description" content="Голос обрабатывается на устройстве, а не в облаке. Прототип на Rock Pi 4B+ под GNU GPLv3.">
+<meta property="og:image" content="assets/og-cover.jpg">
+<meta property="og:locale" content="ru_RU">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/onest-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.classList.add('has-js');</script>
+</head>
+<body>
+<a class="skip" href="#main">Перейти к содержанию</a>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="#top" aria-label="Умная колонка — в начало страницы">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">Умная колонка</span>
+    </a>
+    <nav class="nav" aria-label="Основная навигация">
+      <a href="#problem">Проблема</a>
+      <a href="#principles">Принципы</a>
+      <a href="#hardware">Железо</a>
+      <a href="#architecture">Архитектура</a>
+      <a href="#compare">Сравнение</a>
+      <a href="#plugins">Плагины</a>
+      <a href="#poster">Постер</a>
+    </nav>
+    <span class="topbar__tag">GNU GPLv3</span>
+    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu">Меню</button>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Мобильная навигация" hidden>
+    <a href="#problem">Проблема</a>
+    <a href="#principles">Принципы</a>
+    <a href="#hardware">Железо</a>
+    <a href="#architecture">Архитектура</a>
+    <a href="#compare">Сравнение</a>
+    <a href="#plugins">Плагины</a>
+    <a href="#poster">Постер</a>
+    <a href="#authors">Авторы</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="top">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow"><span class="eyebrow__sq" aria-hidden="true"></span>Шаг в будущее · Мурманск, 23–28 ноября 2026</p>
+        <h1>
+          <span class="h1-line">Умная колонка</span>
+          <span class="h1-line"><span class="h1-mark">с открытым</span></span>
+          <span class="h1-line">исходным кодом</span>
+        </h1>
+        <p class="lead">Прототип мультимедийного устройства на Rock Pi 4B+. Ключевая фраза, распознавание речи и синтез ответа работают на самой колонке — без облачных сервисов для обработки данных. Код открыт под GNU GPLv3.</p>
+        <div class="hero__actions">
+          <a class="btn" href="#architecture">Разобрать архитектуру</a>
+          <a class="link-arrow" href="#poster">Смотреть постер</a>
+        </div>
+        <dl class="facts">
+          <div><dt>13</dt><dd>плагинов готово</dd></div>
+          <div><dt>4</dt><dd>динамика</dd></div>
+          <div><dt>10 160 ₽</dt><dd>себестоимость прототипа</dd></div>
+        </dl>
+      </div>
+
+      <figure class="device-plate">
+        <img src="assets/device-render.jpg" width="2078" height="1730" alt="3D-рендер прототипа: корпус из PLA на модульном каркасе, четыре динамика, микрофон и плата Rock Pi.">
+        <figcaption>
+          <span class="fig-tag">Рис. 1</span>
+          <span>3D-рендер прототипа. Корпус напечатан из PLA, каркас модульный.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="ticker" aria-label="Ключевые характеристики">
+      <span>Rock Pi 4B+</span>
+      <span>4 ГБ ОЗУ</span>
+      <span>32 ГБ eMMC</span>
+      <span>4 динамика</span>
+      <span>Python</span>
+      <span>GNU/Linux</span>
+    </div>
+  </section>
+
+  <section class="section" id="problem">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="s-label"><span>01</span>Проблема</p>
+        <h2>Твой голос уходит на чужой сервер</h2>
+        <p class="s-intro">Массовые умные колонки обрабатывают запросы в облаке. Пользователь не знает, что происходит с записью после ответа, а без подписки устройство теряет большую часть функций.</p>
+      </div>
+
+      <div class="problem-grid">
+        <article class="problem-item">
+          <p class="problem-no">01 / Подписка</p>
+          <h3>Подписка вместо владения</h3>
+          <p>Полноценное использование продаётся по подписке. Без неё колонка превращается в ограниченное устройство, привязанное к чужой экосистеме.</p>
+        </article>
+        <article class="problem-item">
+          <p class="problem-no">02 / Облако</p>
+          <h3>Обработка на сервере</h3>
+          <p>Запись уходит на серверы компании: там распознаётся речь и формируется ответ. Хранение истории запросов создаёт риск утечки персональных данных.</p>
+        </article>
+        <article class="problem-item">
+          <p class="problem-no">03 / Код</p>
+          <h3>Закрытая система</h3>
+          <p>Пользователь не может посмотреть код, изменить логику или добавить нужную функцию. Всё решает производитель — от интерфейса до списка доступных команд.</p>
+        </article>
+      </div>
+
+      <div class="quote">
+        <blockquote>
+          <p>«Умные колонки с локальной обработкой создавали только энтузиасты — в производство такие устройства не поступали».</p>
+        </blockquote>
+        <cite>Из реферата, раздел 1.1</cite>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ink" id="principles">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="s-label"><span>02</span>Принципы</p>
+        <h2>Что взято у лучших — и чего нет у аналогов</h2>
+        <p class="s-intro">Четыре свойства, на которых держится конструкция и код. Они заложены в проект, а не добавлены после сборки.</p>
+      </div>
+
+      <div class="principles">
+        <article class="principle">
+          <p class="principle__no">01</p>
+          <h3>Открытость</h3>
+          <p>Исходный код под GNU GPLv3, 3D-модели, чертежи и документация — в репозитории. Устройство можно изучать, собирать заново и улучшать.</p>
+        </article>
+        <article class="principle">
+          <p class="principle__no">02</p>
+          <h3>Модульность</h3>
+          <p>Каркас с креплениями «ласточкин хвост»: дисплей, проектор, камера и датчики добавляются как отдельные модули. Ориентир — ремонтопригодные ThinkPad.</p>
+        </article>
+        <article class="principle">
+          <p class="principle__no">03</p>
+          <h3>Конфиденциальность</h3>
+          <p>Ключевая фраза, речь и синтез ответа обрабатываются локально. Голос не нужно отправлять в облако, чтобы получить ответ.</p>
+        </article>
+        <article class="principle">
+          <p class="principle__no">04</p>
+          <h3>Модифицируемость</h3>
+          <p>Корпус печатается на 3D-принтере, внешние панели меняются. Со временем можно заменить корпус или отдельные части, не меняя устройство целиком.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="hardware">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="s-label"><span>03</span>Устройство</p>
+        <h2>Собрано из доступных компонентов</h2>
+        <p class="s-intro">Прототип построен на одноплатном компьютере Rock Pi 4B+. Корпус и каркас напечатаны из PLA, электроника подобрана под локальные нейросети.</p>
+      </div>
+
+      <div class="hardware">
+        <dl class="spec-list">
+          <div class="spec-row"><dt>Вычислительный модуль</dt><dd>Rock Pi 4B+</dd></div>
+          <div class="spec-row"><dt>Память</dt><dd>4 ГБ ОЗУ, 32 ГБ eMMC</dd></div>
+          <div class="spec-row"><dt>Звук</dt><dd>4 динамика, усилитель PAM8403</dd></div>
+          <div class="spec-row"><dt>Микрофон</dt><dd>Чувствительный, для захвата команд</dd></div>
+          <div class="spec-row"><dt>Камера</dt><dd>Модуль OV5647</dd></div>
+          <div class="spec-row"><dt>Проектор</dt><dd>Съёмный дополнительный модуль</dd></div>
+          <div class="spec-row"><dt>Корпус</dt><dd>PLA, каркас «ласточкин хвост»</dd></div>
+          <div class="spec-row"><dt>ПО</dt><dd>Python, GNU/Linux, GNU GPLv3</dd></div>
+        </dl>
+
+        <aside class="cost" aria-labelledby="cost-title">
+          <span class="cost__tag">Без подписки</span>
+          <p class="cost__label" id="cost-title">Себестоимость прототипа</p>
+          <p class="cost__num">10 160 ₽</p>
+          <div class="cost__rows">
+            <div class="cost__row"><span>Rock Pi 4B+</span><span>6 120 ₽</span></div>
+            <div class="cost__row"><span>Аудиоусилитель PAM8403</span><span>80 ₽</span></div>
+            <div class="cost__row"><span>Динамики</span><span>420 ₽</span></div>
+            <div class="cost__row"><span>Микрофон</span><span>290 ₽</span></div>
+            <div class="cost__row"><span>Камера OV5647</span><span>540 ₽</span></div>
+            <div class="cost__row"><span>PLA-пластик</span><span>310 ₽</span></div>
+            <div class="cost__row"><span>Проектор</span><span>2 400 ₽</span></div>
+          </div>
+          <div class="cost__total"><span>Итого</span><span>10 160 ₽</span></div>
+          <p class="cost__note">Цены из экономического раздела реферата. Это себестоимость сборки, а не цена продажи.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--orange" id="architecture">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="s-label"><span>04</span>Архитектура</p>
+        <h2>Пять шагов от фразы до ответа</h2>
+        <p class="s-intro">Вся цепочка выполняется на устройстве. Выбери шаг, чтобы увидеть, что происходит внутри.</p>
+      </div>
+
+      <div class="pipe">
+        <div class="pipe__tabs" role="tablist" aria-label="Этапы обработки команды">
+          <button class="pipe__tab is-active" id="pipe-tab-1" type="button" role="tab" aria-selected="true" aria-controls="pipe-panel-1" tabindex="0">
+            <span class="pipe__no">01</span>
+            <span class="pipe__title">openWakeWord</span>
+            <span class="pipe__meta">ключевая фраза</span>
+          </button>
+          <button class="pipe__tab" id="pipe-tab-2" type="button" role="tab" aria-selected="false" aria-controls="pipe-panel-2" tabindex="-1">
+            <span class="pipe__no">02</span>
+            <span class="pipe__title">Vosk</span>
+            <span class="pipe__meta">речь в текст</span>
+          </button>
+          <button class="pipe__tab" id="pipe-tab-3" type="button" role="tab" aria-selected="false" aria-controls="pipe-panel-3" tabindex="-1">
+            <span class="pipe__no">03</span>
+            <span class="pipe__title">Намерение</span>
+            <span class="pipe__meta">алгоритм Левенштейна</span>
+          </button>
+          <button class="pipe__tab" id="pipe-tab-4" type="button" role="tab" aria-selected="false" aria-controls="pipe-panel-4" tabindex="-1">
+            <span class="pipe__no">04</span>
+            <span class="pipe__title">Плагин</span>
+            <span class="pipe__meta">действие</span>
+          </button>
+          <button class="pipe__tab" id="pipe-tab-5" type="button" role="tab" aria-selected="false" aria-controls="pipe-panel-5" tabindex="-1">
+            <span class="pipe__no">05</span>
+            <span class="pipe__title">Piper</span>
+            <span class="pipe__meta">ответ голосом</span>
+          </button>
+        </div>
+
+        <div class="pipe__panel" id="pipe-panel-1" role="tabpanel" aria-labelledby="pipe-tab-1" tabindex="0">
+          <p class="pipe__kicker">Шаг 01 / 05 · офлайн</p>
+          <h3>Устройство слушает только ключевую фразу</h3>
+          <p>Локальная нейросеть openWakeWord постоянно проверяет звук на ключевую фразу. Пока фраза не распознана, команда не записывается и никуда не отправляется.</p>
+          <p class="pipe__tech"><span>Технология</span><span>openWakeWord · нейросеть на устройстве</span></p>
+        </div>
+
+        <div class="pipe__panel" id="pipe-panel-2" role="tabpanel" aria-labelledby="pipe-tab-2" tabindex="0" hidden>
+          <p class="pipe__kicker">Шаг 02 / 05 · офлайн</p>
+          <h3>Речь превращается в текст на месте</h3>
+          <p>После активации микрофон записывает команду, а Vosk преобразует речь в текст на самом устройстве. Облачный STT не используется.</p>
+          <p class="pipe__tech"><span>Технология</span><span>Vosk · локальная модель STT</span></p>
+        </div>
+
+        <div class="pipe__panel" id="pipe-panel-3" role="tabpanel" aria-labelledby="pipe-tab-3" tabindex="0" hidden>
+          <p class="pipe__kicker">Шаг 03 / 05 · Python</p>
+          <h3>Команда превращается в намерение</h3>
+          <p>Собственная функция сравнивает текст с шаблонами команд по расстоянию Левенштейна, определяет плагин и его параметры. Алгоритм устойчив к ошибкам распознавания речи.</p>
+          <p class="pipe__tech"><span>Технология</span><span>расстояние Левенштейна · Python</span></p>
+        </div>
+
+        <div class="pipe__panel" id="pipe-panel-4" role="tabpanel" aria-labelledby="pipe-tab-4" tabindex="0" hidden>
+          <p class="pipe__kicker">Шаг 04 / 05 · плагины</p>
+          <h3>Плагин выполняет действие</h3>
+          <p>Погода, музыка, будильник, заметки или локальная языковая модель — каждый сценарий оформлен отдельным плагином. Общие утилиты sonutils упрощают разработку новых.</p>
+          <p class="pipe__tech"><span>Технология</span><span>система плагинов · sonutils</span></p>
+        </div>
+
+        <div class="pipe__panel" id="pipe-panel-5" role="tabpanel" aria-labelledby="pipe-tab-5" tabindex="0" hidden>
+          <p class="pipe__kicker">Шаг 05 / 05 · офлайн</p>
+          <h3>Ответ синтезируется и звучит</h3>
+          <p>Piper синтезирует голос локально и отдаёт звук на усилитель и четыре динамика. Ответ локальной языковой модели озвучивается по мере генерации, в реальном времени.</p>
+          <p class="pipe__tech"><span>Технология</span><span>Piper · локальный TTS</span></p>
+        </div>
+      </div>
+
+      <div class="stackbar">
+        <div><span class="stackbar__label">Язык</span><span class="stackbar__value">Python</span></div>
+        <div><span class="stackbar__label">ОС</span><span class="stackbar__value">GNU/Linux</span></div>
+        <div><span class="stackbar__label">Ускорение</span><span class="stackbar__value">Многопроцессность</span></div>
+        <div><span class="stackbar__label">Утилиты</span><span class="stackbar__value">sonutils: TTS, STT, планировщик, логгер</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="compare">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="s-label"><span>05</span>Сравнение</p>
+        <h2>Локальная обработка — редкость на рынке</h2>
+        <p class="s-intro">Крупные колонки обрабатывают запросы в облаке и держат систему закрытой. Открытые альтернативы обычно требуют отдельный сервер.</p>
+      </div>
+
+      <div class="compare">
+        <aside class="score" aria-labelledby="score-title">
+          <p class="score__label" id="score-title">Итоговая оценка прототипа</p>
+          <p class="score__num">15<small>/20</small></p>
+          <p class="score__text">По четырём критериям и пятибалльной шкале. Прототип выигрывает по цене, приватности и отсутствию подписки, но пока уступает коммерческим моделям по качеству звука и сборки.</p>
+          <ul class="score__crit">
+            <li>Цена</li>
+            <li>Функциональность</li>
+            <li>Качество</li>
+            <li>Приватность</li>
+          </ul>
+          <p class="score__note">Подробная таблица — в приложении Д реферата.</p>
+        </aside>
+
+        <div class="table-wrap" role="region" aria-label="Сравнение умных колонок" tabindex="0">
+          <table>
+            <caption>Обработка данных и открытость устройств по обзору аналогов</caption>
+            <thead>
+              <tr>
+                <th scope="col">Устройство</th>
+                <th scope="col">Обработка</th>
+                <th scope="col">Открытый код</th>
+                <th scope="col">Внешний сервер</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Amazon Echo</th><td>Облако</td><td class="mark-no">Нет</td><td class="mark-no">Нет</td></tr>
+              <tr><th scope="row">Google Nest</th><td>Облако</td><td class="mark-no">Нет</td><td class="mark-no">Нет</td></tr>
+              <tr><th scope="row">Apple HomePod</th><td>Облако, Siri</td><td class="mark-no">Нет</td><td class="mark-no">Нет</td></tr>
+              <tr><th scope="row">Яндекс Станция</th><td>Облако</td><td class="mark-no">Нет</td><td class="mark-no">Нет</td></tr>
+              <tr><th scope="row">ВК Капсула</th><td>Облако</td><td class="mark-no">Нет</td><td class="mark-no">Нет</td></tr>
+              <tr><th scope="row">Home Assistant Voice</th><td>Локально на сервере HA</td><td class="mark-yes">Да</td><td class="mark-part">Да, Home Assistant</td></tr>
+              <tr class="is-own"><th scope="row">Наш прототип</th><td>Локально</td><td class="mark-yes">Да, GPLv3</td><td class="mark-yes">Нет</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="table-note">Данные из обзора аналогов в реферате. «Внешний сервер» — необходимость отдельного компьютера или сервиса для работы устройства. Оценка 15/20 — итог сравнения по четырём критериям, а не среднее по таблице.</p>
+    </div>
+  </section>
+
+  <section class="section" id="plugins">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="s-label"><span>06</span>Плагины</p>
+        <h2>20 функций, 13 уже работают</h2>
+        <p class="s-intro">Плагины — отдельные модули на Python. Ниже список из приложения А реферата со статусами на момент защиты проекта.</p>
+      </div>
+
+      <div class="filters-row">
+        <div class="filters" role="group" aria-label="Фильтр плагинов по статусу">
+          <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">Все <span>20</span></button>
+          <button class="filter" type="button" data-filter="ready" aria-pressed="false">Готово <span>13</span></button>
+          <button class="filter" type="button" data-filter="dev" aria-pressed="false">В разработке <span>7</span></button>
+        </div>
+        <p class="filters__status" id="plugin-status" aria-live="polite">Показано 20 из 20</p>
+      </div>
+
+      <ul class="plugins">
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">01</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Распознавание речи</h3>
+          <p class="plugin__desc">Vosk превращает голос в текст локальной упрощённой нейросетью.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">02</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Синтез речи</h3>
+          <p class="plugin__desc">Piper синтезирует голос на устройстве, без облачного TTS.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">03</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Музыка и видео</h3>
+          <p class="plugin__desc">pytube ищет ролики на YouTube, mpv воспроизводит поток.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">04</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Локальная языковая модель</h3>
+          <p class="plugin__desc">Ollama запускает модель на устройстве, ответ озвучивается по ходу генерации.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">05</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Новости</h3>
+          <p class="plugin__desc">requests и bs4 собирают свежие материалы, устройство зачитывает текст статьи.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">06</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Будильник</h3>
+          <p class="plugin__desc">Установка и срабатывание будильника через стандартный модуль time.</p>
+        </li>
+        <li class="plugin" data-status="dev">
+          <div class="plugin__head"><span class="plugin__no">07</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>В разработке</span></div>
+          <h3 class="plugin__title">Список задач</h3>
+          <p class="plugin__desc">Задачи сохраняются в JSON-файл. Функция в активной разработке.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">08</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Погода</h3>
+          <p class="plugin__desc">Данные OpenWeatherMap через requests и bs4, озвучивание прогноза.</p>
+        </li>
+        <li class="plugin" data-status="dev">
+          <div class="plugin__head"><span class="plugin__no">09</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>В разработке</span></div>
+          <h3 class="plugin__title">Заметки</h3>
+          <p class="plugin__desc">Хранение заметок в JSON-файле. Функция в активной разработке.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">10</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Wikipedia</h3>
+          <p class="plugin__desc">Поиск и чтение статей через библиотеку wikipedia.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">11</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Текущее время</h3>
+          <p class="plugin__desc">Ответ на вопрос «сколько времени» через модуль time.</p>
+        </li>
+        <li class="plugin" data-status="dev">
+          <div class="plugin__head"><span class="plugin__no">12</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>В разработке</span></div>
+          <h3 class="plugin__title">Маршрут</h3>
+          <p class="plugin__desc">Составление маршрута. Функция в активной разработке.</p>
+        </li>
+        <li class="plugin" data-status="dev">
+          <div class="plugin__head"><span class="plugin__no">13</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>В разработке</span></div>
+          <h3 class="plugin__title">Транспорт</h3>
+          <p class="plugin__desc">Расписание общественного транспорта. Функция в активной разработке.</p>
+        </li>
+        <li class="plugin" data-status="dev">
+          <div class="plugin__head"><span class="plugin__no">14</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>В разработке</span></div>
+          <h3 class="plugin__title">Тренировки</h3>
+          <p class="plugin__desc">Сценарии тренировок. Функция в активной разработке.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">15</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Напоминания</h3>
+          <p class="plugin__desc">Напоминания о событиях и делах.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">16</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Арифметика</h3>
+          <p class="plugin__desc">Вычисления по голосовой команде.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">17</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Конвертации</h3>
+          <p class="plugin__desc">Экономические конвертации валют и величин.</p>
+        </li>
+        <li class="plugin" data-status="ready">
+          <div class="plugin__head"><span class="plugin__no">18</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>Готово</span></div>
+          <h3 class="plugin__title">Графическая оболочка</h3>
+          <p class="plugin__desc">Отрисовка через Xorg, интерфейс на основе Kodi.</p>
+        </li>
+        <li class="plugin" data-status="dev">
+          <div class="plugin__head"><span class="plugin__no">19</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>В разработке</span></div>
+          <h3 class="plugin__title">Умный дом</h3>
+          <p class="plugin__desc">Управление устройствами умного дома. Функция в активной разработке.</p>
+        </li>
+        <li class="plugin" data-status="dev">
+          <div class="plugin__head"><span class="plugin__no">20</span><span class="plugin__state"><span class="dot" aria-hidden="true"></span>В разработке</span></div>
+          <h3 class="plugin__title">Датчики</h3>
+          <p class="plugin__desc">Температура, влажность и уровень CO<sub>2</sub>. Функция в активной разработке.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--ink" id="poster">
+    <div class="wrap">
+      <div class="poster-grid">
+        <div class="poster-copy">
+          <p class="s-label s-label--ink"><span>07</span>Материалы</p>
+          <h2>Постер и полный текст</h2>
+          <p>Печатный постер с 3D-рендером, схемой обработки и четырьмя преимуществами. В реферате — обзор аналогов, архитектура, экономика, приложения с плагинами и технологическая карта.</p>
+          <div class="poster-actions">
+            <a class="btn btn--orange" href="assets/poster.jpg" data-poster-open>Открыть постер</a>
+            <a class="btn btn--ghost" href="assets/referat.docx" download>Скачать реферат · DOCX</a>
+          </div>
+          <p class="poster-note">Реферат — 8,3 МБ. Приложения: плагины, материалы, технологическая карта, экономика.</p>
+        </div>
+
+        <figure class="poster-figure">
+          <a class="poster-thumb" href="assets/poster.jpg" data-poster-open aria-label="Открыть постер в полном размере">
+            <img src="assets/poster.jpg" width="1200" height="1973" loading="lazy" alt="Печатный постер проекта: заголовок «Умная колонка с открытым исходным кодом», блоки проблем, преимуществ, схемы обработки и 3D-рендер устройства.">
+          </a>
+          <figcaption>Постер: «Умная колонка с открытым исходным кодом». 3D-рендер, схема обработки и преимущества.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer" id="authors">
+  <div class="wrap">
+    <p class="footer__eyebrow">Шаг в будущее · Северо-Западный федеральный округ · 2026</p>
+    <p class="footer__claim">Открытый код. Локальная обработка. Без обязательной подписки.</p>
+
+    <div class="footer__grid">
+      <div>
+        <h3>Автор</h3>
+        <p>Васильев Антон Дмитриевич<br>11 класс, МОБУ «СОШ «ЦО «Кудрово»<br>Ленинградская область, г. Кудрово</p>
+      </div>
+      <div>
+        <h3>Научный руководитель</h3>
+        <p>Мамедов Руслан Валегович<br>Учитель технологии, МОБУ «СОШ «ЦО «Кудрово»</p>
+      </div>
+      <div>
+        <h3>Программа</h3>
+        <p>Федерально-окружное соревнование молодых исследователей<br>Мурманск, 23–28 ноября 2026 г.<br>Город Мурманск</p>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© 2026 Васильев Антон · GNU GPLv3</p>
+      <p>Сайт-презентация исследовательской работы. Характеристики и оценки — по тексту реферата.</p>
+      <p class="footer__links"><a href="assets/referat.docx" download>Реферат</a> <a href="#top">Наверх</a></p>
+    </div>
+  </div>
+</footer>
+
+<dialog class="dialog" id="poster-dialog" aria-labelledby="dialog-title">
+  <div class="dialog__head">
+    <h2 id="dialog-title">Постер проекта</h2>
+    <form method="dialog"><button class="dialog__close" type="submit">Закрыть</button></form>
+  </div>
+  <img src="assets/poster.jpg" width="1200" height="1973" alt="Печатный постер проекта «Умная колонка с открытым исходным кодом» в полном размере.">
+</dialog>
+
+<script src="js/app.js" defer></script>
+</body>
+</html>
